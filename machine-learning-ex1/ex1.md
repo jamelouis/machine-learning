@@ -35,7 +35,7 @@ plt.xlabel('populations');
 plt.ylabel('profits');
 ```
 
-![populations-profits &#x6563;&#x5217;&#x56FE;](.gitbook/assets/download%20%281%29.png)
+![populations-profits &#x6563;&#x5217;&#x56FE;](./populations_profits.png)
 
 ## 用sklearn的线性模型学习
 
@@ -63,5 +63,5 @@ mean_squared_error(y,y_predict)/2;
 # 4.476
 ```
 
-![](.gitbook/assets/download%20%282%29.png)
+![预测图](machine-learning-ex1/populations_profits_prediction.png)
 
