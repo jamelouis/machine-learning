@@ -63,5 +63,5 @@ mean_squared_error(y,y_predict)/2;
 # 4.476
 ```
 
-![预测图](machine-learning-ex1/populations_profits_prediction.png)
+![预测图](populations_profits_prediction.png)
 
