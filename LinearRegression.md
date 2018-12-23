@@ -32,7 +32,7 @@ plt.plot(x,y,'rx');
 plt.show();
 ```
 
-![](linear_regression/output_3_0.png)
+![](machine-learning-ex1/linear_regression/output_3_0.png)
 
 ### 训练 Linear Regression 模型
 
@@ -58,7 +58,7 @@ plt.plot( x, y,'rx', x, ypredict, '-');
 plt.show();
 ```
 
-![](linear_regression/output_5_0.png)
+![](machine-learning-ex1/linear_regression/output_5_0.png)
 
 ### 训练模型的误差
 
@@ -110,7 +110,7 @@ plt.ylabel('price');
 plt.show();
 ```
 
-![](multivariable_linear_regression/output_3_0.png)
+![](machine-learning-ex1/multivariable_linear_regression/output_3_0.png)
 
 ### Feature Scaling
 
@@ -123,7 +123,7 @@ plt.legend(['size-price','bed-price']);
 plt.show();
 ```
 
-![](multivariable_linear_regression/output_4_0.png)
+![](machine-learning-ex1/multivariable_linear_regression/output_4_0.png)
 ### 大小-床数 关系图形表示
 
 ```python
@@ -133,7 +133,7 @@ plt.ylabel('bed');
 plt.show();
 ```
 
-![](multivariable_linear_regression/output_5_0.png)
+![](machine-learning-ex1/multivariable_linear_regression/output_5_0.png)
 
 ### 训练模型
 
@@ -165,7 +165,7 @@ print('a 1650 sq-ft, 3 br house:', ypredict)
 
 ### GradientDescent过程
 
-![](linear_regression.gif)
+![](machine-learning-ex1/linear_regression.gif)
 
 
 
