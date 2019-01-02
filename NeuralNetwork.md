@@ -77,3 +77,8 @@ print(np.reshape(clf.predict(test_train),(row,col)))
 >   [ 5  1  7  9]
 >   [ 7  9  8  1] ]
 
+## 参考
+
+* [Neural Networks Supervised - sklearn][1]
+
+[1]:https://scikit-learn.org/stable/modules/neural_networks_supervised.html "Neural Networks Supervised - sklearn"
