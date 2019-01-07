@@ -28,20 +28,8 @@ google_analytics: UA-130017772-1
 
 header_pages:
   - about.md
-<<<<<<< HEAD
-
-pagination:
-  enabled: true
-  per_page: 3
-  permalink: '/page/:num/'
-  title: ' - page :num'
-  limit: 0
-  sort_field: 'date'
-  sort_reverse: true
-=======
   
 paginate: 3
->>>>>>> 45b9c51451b4d691aae2c82dcbd946d473ba537f
 
 # Build settings
 markdown: kramdown
