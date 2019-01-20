@@ -29,8 +29,8 @@ google_analytics: UA-130017772-1
 header_pages:
   - about.md
   
-paginate: 3
-
+paginate: 5
+show_excerpts: true
 # Build settings
 markdown: kramdown
 theme: minima

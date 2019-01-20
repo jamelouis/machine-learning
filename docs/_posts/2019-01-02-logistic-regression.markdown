@@ -5,6 +5,10 @@ date:   2019-01-02 16:45:01 +0800
 categories: machine-learning
 ---
 
+本篇博文主要记录了如何使用 SciKit-Learn 库重新实现吴恩达机器学习课程中关于
+Logistic Regression 的工程实践。由三部分组成，分别是单变量的、Regularized的
+和多变量的  Logistic Regression。
+
 ## Sigmoid Function And Cost Function
 ### Sigmoid Function
 
