@@ -5,6 +5,9 @@ date:   2019-01-02 16:46:01 +0800
 categories: machine-learning
 ---
 
+本篇博文是关于如何使用 SciKit-Learn 库重新实现吴恩达机器学习课程中关于 
+Nerual Network的课程作业。该课程作业是关于手写数字的识别的编程实践。
+
 ## 读取数据
 
 ```python

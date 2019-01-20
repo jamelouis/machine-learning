@@ -5,6 +5,10 @@ date:   2019-01-02 16:44:01 +0800
 categories: machine-learning
 ---
 
+本篇博文主要记录了如何使用 SciKit-Learn 库重新实现吴恩达机器学习课程中关于
+Linear Regression 的工程实践。由两部分组成，分别是单变量的和多变量的 
+Linear Regression。
+
 ## 单变量线性回归程序设计作业 - python
 
 ```python
