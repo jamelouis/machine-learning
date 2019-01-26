@@ -1,0 +1,140 @@
+---
+layout: post
+title:  "机器学习 - Support Vector Machines"
+date:   2019-01-26 16:43:01 +0800
+categories: machine-learning
+---
+
+本篇博文主要是使用python的scikit-learn库重新实现吴恩达机器学习课程的
+程序设计6的练习。该练习分两个部门，第一部分通过几个2D的数据集来了解SVMs时如何工作的和如何使用高斯内核，而第二部门则是使用SVM构建一个垃圾分类器。
+
+## Dataset1 的练习
+
+第一个练习的数据集是可线性区分的。
+
+首先，在octave中导出数据：
+```octave
+load("ex6data1.mat")
+csvwrite("ex6data1.csv",[X,y])
+```
+
+接着，用pandas库读取csv数据。
+
+```python
+import pandas as pd
+ex6data1 = pd.read_csv('ex6data1.csv',header=None)
+print(ex6data1.head())
+```
+
+训练数据的前五行如下：
+
+            0       1  2
+    0  1.9643  4.5957  1
+    1  2.2753  3.8589  1
+    2  2.9781  4.5651  1
+    3  2.9320  3.5519  1
+    4  3.5772  2.8560  1
+
+### 数据可视化
+
+分离出 positive 和 negative 数据。
+
+```python
+positive_train_examples = ex6data1[ex6data1[2] == 1];
+negative_train_examples = ex6data1[ex6data1[2] == 0];
+```
+
+用 matplotlib 库绘制该数据集，positive 数据用黑色的 + 表示，
+而 negative 数据则用黄色的 o 表示。
+
+```python
+from matplotlib import pyplot as plt
+
+def plotData(px,py,nx,ny,title):
+    plt.plot(px,py,'k+',nx,ny,'yo')
+    plt.title(title)
+    plt.show()
+    
+plotData(positive_train_examples[0],positive_train_examples[1],
+         negative_train_examples[0],negative_train_examples[1],
+        "Figure 1: Example Dataset 1")
+```
+
+
+![Example Dataset 1]({{ "assets/images/machine-learning-ex6/svm_dataset_1/output_2_0.png" | relative_url }} )
+
+由图可知，positive 数据基本位于图片的右上角，而 negative 数据则位于左下角。需要特别指出的是，有一个 outlier positive 训练数据，不在右上角，而时在左上角，大概是在（0.1，4.1）的位置。
+
+在这个练习中，主要是了解 outlier 数据如何影响 SVM 的 decision boudary。
+
+### 训练模型
+
+从 sklearn 库中导入 svm 模块，使用其中 SVC 模型，并将其内核设置为 *linear*。
+
+```python
+from sklearn import svm
+X = ex6data1.as_matrix([0,1])
+y = ex6data1.as_matrix([2])
+
+svm_model = svm.SVC(kernel="linear")
+svm_reg = svm_model.fit(X,y)
+
+print(svm_reg.coef_,svm_reg.intercept_)
+```
+
+模型的参数表示如下：
+
+    [[1.40718563 2.13398052]] [-10.34889778]
+
+### 训练模型曲线化
+
+由上可知，该svm的数学模型为：
+
+> x1 * 1.41 + x2 * 2.134 - 10.35 = 0
+> 
+> x2 = - (x1 * 1.41 + (-10.35)) / 2.134
+> 
+> x2 = - (x1 * w[0] + b) / w[2]
+> 
+> w = coef_[0], b = intercept_
+
+```python
+import numpy as np
+
+def visualBoundaryLinear(X,y,model,title):
+    xp = np.linspace(min(X[:,0]),max(X[:,0]),100)
+    w = model.coef_[0]
+    b = model.intercept_
+    y = - (w[0] * xp + b) / w[1]
+    plt.plot(xp,y,'b-')
+    plotData(positive_train_examples[0],positive_train_examples[1],
+         negative_train_examples[0],negative_train_examples[1],
+         title)
+
+visualBoundaryLinear(X,y,svm_model,"SVM Decision Boundary with C = 1 (Example Dataset 1)")
+```
+
+![SVM Decision Boundary with C =1 ]({{ "assets/images/machine-learning-ex6/svm_dataset_1/output_5_0.png" | relative_url}})
+
+由图可知，outlier被模型预测为了 negative 类别。接下来，将通过参数 C 来微调SVM模型。
+
+## Tune the Model
+
+> In this part of the exercise, you will try using different values
+> of the C parameter with SVMs. Informally, the C parameter is a 
+> positive value that controls the penalty for misclassified training
+> examples.
+
+> A large C parameter tells the SVM to try to classify all the examples corretcly.
+
+设置参数C=100，再次训练模型。
+
+```python
+svm_model_c100 = svm.SVC(kernel="linear", C=100)
+svm_reg_c100 = svm_model_c100.fit(X,y)
+visualBoundaryLinear(X,y,svm_model_c100,"SVM Decision Boundary with C = 100 (Example Dataset 1)")
+```
+
+![SVM Decision Boundary with C = 100]({{ "assets/images/machine-learning-ex6/svm_dataset_1/output_6_1.png" | relative_url }})
+
+由图可知，当参数C为100时，outlier已经被正确的归类为了 positive 类别了。
