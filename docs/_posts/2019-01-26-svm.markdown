@@ -138,3 +138,113 @@ visualBoundaryLinear(X,y,svm_model_c100,"SVM Decision Boundary with C = 100 (Exa
 ![SVM Decision Boundary with C = 100]({{ "assets/images/machine-learning-ex6/svm_dataset_1/output_6_1.png" | relative_url }})
 
 由图可知，当参数C为100时，outlier已经被正确的归类为了 positive 类别了。
+
+## SVM with Gaussian Kernels
+
+这部分会使用高斯内核的SVM模型来训练非线性的模型分类器。
+
+### 高斯内核
+
+> Gaussian kernel: a similarity function that measures the 
+> "distance" between a pair of examples,(xi,xj).
+
+```python
+import numpy as np
+def gaussian_kernel(x1,x2,sigma):
+    return np.exp(-sum((x1-x2)**2) / (2*sigma**2))
+
+x1 = np.array([1,2,1])
+x2 = np.array([0,4,-1])
+sigma = 2
+
+sim = gaussian_kernel(x1,x2,sigma)
+print(sim)
+```
+
+    0.32465246735834974
+
+### Example Dataset 2
+
+用pandas的api，read_csv加载从octave中导出的数据，ex6data2.csv.
+
+```python
+import pandas as pd
+
+data = pd.read_csv('ex6data2.csv',header=None)
+print(data.head())
+```
+
+              0         1  2
+    0  0.107143  0.603070  1
+    1  0.093318  0.649854  1
+    2  0.097926  0.705409  1
+    3  0.155530  0.784357  1
+    4  0.210829  0.866228  1
+
+接着，可视化 Example Dataset 2数据集。
+
+```python
+from matplotlib import pyplot as plt
+def plotData(data,title):
+    positive_examples = data[data[2]==1]
+    negative_examples = data[data[2]==0]
+    
+    plt.plot(positive_examples[0],positive_examples[1], 'k+',
+             negative_examples[0],negative_examples[1], 'yo')
+    plt.title(title)
+    plt.show()
+    
+plotData(data,"Figure 4: Example Dataset 2")
+```
+
+![Figure 4: Example Dataset 2]({{ "assets/images/machine-learning-ex6/svm_with_gaussian_kernels/output_3_0.png" | relative_url}})
+
+### 训练模型
+
+sklearn中的SVM模型，没有用到 sigma 参数，但有个类似的参数 gamma。
+由[文档svm kernels][svm kernels]中，可知：
+> gamma = 1.0 / (2 * sigma * sigam)
+
+```python
+from sklearn import svm
+
+X = data.as_matrix([0,1])
+y = data.as_matrix([2])
+# https://scikit-learn.org/stable/modules/svm.html#svm-kernels
+sigma = 0.1
+gamma = 1 / (2*sigma**2)
+print('gamma is: ', gamma)
+model = svm.SVC(kernel='rbf',gamma=gamma)
+reg = model.fit(X,y)
+```
+
+    gamma is:  49.99999999999999
+
+### 模型可视化
+
+利用contour函数，可以可视化出模型的 Decision Boundary。
+
+```python
+# https://scikit-learn.org/stable/auto_examples/svm/plot_iris.html
+def make_meshgrid(x,y,h=0.02):
+    x_min, x_max = x.min(), x.max()
+    y_min, y_max = y.min(), y.max()
+    xx, yy = np.meshgrid(np.arange(x_min,x_max,h),
+                         np.arange(y_min,y_max,h))
+    return xx,yy
+
+def plot_contours(clf, xx, yy):
+    Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    plt.contour(xx,yy,Z,colors='b', linewidths=1)
+    plotData(data,'Figure 5: SVM (Gaussian Kernel) Decision Boundary')
+    
+X0,X1 = X[:,0],X[:,1]
+xx, yy = make_meshgrid(X0,X1)
+
+plot_contours(reg,xx,yy)
+```
+
+![Firgure 5: SVM (Gaussian Kernel) Decision Boundary]({{ "assets/images/machine-learning-ex6/svm_with_gaussian_kernels/output_4_0.png" | relative_url}})
+
+[svm kernels]:https://scikit-learn.org/stable/modules/svm.html#svm-kernels
