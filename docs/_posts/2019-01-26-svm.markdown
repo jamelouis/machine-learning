@@ -381,3 +381,95 @@ plot_contours(reg,xx,yy,"SVM (Gaussian Kernel) Decision Boundary (Example Datase
 
 ![SVM (Gaussian Kernel) Decision Boundary (Example Dataset 3)]({{ "assets/images/machine-learning-ex6/svm_dataset_3/output_5_0.png" | relative_url}})
 
+## Spam Classification
+
+从vocab.txt获取特征word。
+
+```python
+def getVocabList():
+    vocabList = []
+    with open('vocab.txt','r') as fp:
+        vocabList = fp.read().split('\n')
+    return vocabList[:-1]
+
+vocabDict = {}
+vocabList = getVocabList();
+for vocab in vocabList:
+    line = vocab.split('\t')
+    vocabDict[line[1]] = int(line[0])   
+```
+
+从邮件的内容中提取特征。
+
+```python
+import re
+import numpy
+
+def processEmail(email_contents):
+    email_contents = email_contents.lower()
+    email_contents = re.sub(r'<[^<>]+>', '', email_contents)
+    email_contents = re.sub(r'[0-9]+','number',email_contents)
+    email_contents = re.sub(r'(http|https)://[^\s]*','httpaddr',email_contents)
+    email_contents = re.sub(r'[^\s]+@[^\s]+','emailaddr', email_contents)
+    email_contents = re.sub(r'[$]+','dollar',email_contents)
+    
+    email_contents = re.sub(r'[ @$/#\.\-:&\*\+=\[\]\?\!\(\)\{\},\'\'">_<;%]', ' ', email_contents)
+    email_contents = re.sub(r'\n', ' ', email_contents)
+    words = email_contents.split(' ')
+    words = [word for word in words if word != '']
+
+    word_indices = np.zeros(len(vocabDict))
+    
+    for word in words:
+        if word in vocabDict.keys():
+            # print(word,vocabDict[word])
+            word_indices[vocabDict[word]] = 1
+    return word_indices
+    
+with open('emailSample1.txt', 'r') as fp:
+    email_contents = fp.read()
+    email_contents = processEmail(email_contents)
+    print(email_contents)
+```
+
+    [0. 0. 0. ... 1. 0. 0.]
+
+加载 spamTrain.csv 训练数据，用sklearn中的线性SVC模型训练，经计算可知，
+该模型的准确率为 0.998.
+
+```python
+spam_train_data = pd.read_csv('spamTrain.csv',header=None)
+```
+
+
+```python
+from sklearn import svm
+X = spam_train_data.as_matrix(np.arange(0,1898))
+y = spam_train_data[1899]
+
+svm_model = svm.SVC(kernel='linear',C=0.1)
+svm_reg = svm_model.fit(X,y)
+
+print(svm_reg.score(X,y))
+```
+
+    0.99825
+
+加载测试数据，根据上述训练模型的预测的准确率为：0.989.
+
+```python
+spam_test_data = pd.read_csv('spamTest.csv',header=None)
+Xtest = spam_test_data.as_matrix(np.arange(0,1898))
+ytest = spam_test_data[1899]
+print(svm_reg.score(Xtest,ytest))
+```
+
+    0.989
+
+## 小结
+
+* 了解了 scikit-learn 的 svm 模块
+* svm.SVC(kernel='linear') 来处理线性分类器
+* svm.SVC(kernel='rbf') 来处理非线性分类器
+* 了解了参数 C 和 gamma 如何影响分类器的准确性
+* 了解countour来显示 svm 的 decision boundary
